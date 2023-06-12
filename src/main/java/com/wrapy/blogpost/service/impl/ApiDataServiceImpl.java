@@ -4,9 +4,7 @@ import com.wrapy.blogpost.entity.ApiData;
 
 import com.wrapy.blogpost.exception.ResourceNotFoundException;
 import com.wrapy.blogpost.payload.ApiDataDto;
-import com.wrapy.blogpost.entity.StatusResponse;
 import com.wrapy.blogpost.repositories.ApiDataRepository;
-import com.wrapy.blogpost.repositories.StatusResponseRepository;
 import com.wrapy.blogpost.service.ApiDataService;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +14,6 @@ import java.util.stream.Collectors;
 @Service
 public class ApiDataServiceImpl implements ApiDataService {
     ApiDataRepository apiDataRepository;
-    StatusResponseRepository statusResponseRepository;
 
     public ApiDataServiceImpl(ApiDataRepository apiDataRepository) {
         this.apiDataRepository = apiDataRepository;
@@ -52,14 +49,6 @@ public class ApiDataServiceImpl implements ApiDataService {
             apiDataRepository.delete(apiData);
         }
     }
-
-
-    @Override
-    public List<StatusResponse> getAllApiDataByStatus() {
-        List<StatusResponse> responseData=statusResponseRepository.findApiDataByStatus();
-        return responseData;
-    }
-
     private ApiData mapToEntity(ApiDataDto apiDataDto){
         ApiData apiData=new ApiData();
         apiData.setStatus(apiDataDto.getStatus());

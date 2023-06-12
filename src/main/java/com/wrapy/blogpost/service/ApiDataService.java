@@ -1,7 +1,6 @@
 package com.wrapy.blogpost.service;
 
 import com.wrapy.blogpost.payload.ApiDataDto;
-import com.wrapy.blogpost.entity.StatusResponse;
 
 import java.util.List;
 
@@ -10,5 +9,4 @@ public interface ApiDataService {
     List<ApiDataDto> getAllApiData();
     ApiDataDto getApiDataById(long id);
     void deleteApiData(long id);
-    List<StatusResponse> getAllApiDataByStatus();
 }

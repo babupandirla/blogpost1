@@ -1,19 +1,23 @@
 package com.wrapy.blogpost.interceptor;
 
 import com.wrapy.blogpost.entity.ApiData;
+import com.wrapy.blogpost.payload.StatusResponse;
 import com.wrapy.blogpost.repositories.ApiDataRepository;
-import com.wrapy.blogpost.repositories.StatusResponseRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
+
 public class CustomInterceptor implements HandlerInterceptor {
     @Autowired
     ApiDataRepository apiDataRepository;
-    @Autowired
-    StatusResponseRepository statusResponseRepository;
+    @PersistenceContext
+    private EntityManager em;
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
@@ -41,7 +45,10 @@ public class CustomInterceptor implements HandlerInterceptor {
 
         // Record API response time using Micrometer
         System.out.println("API response time: " + timeTaken + " ms");
-        System.out.println(statusResponseRepository.findApiDataByStatus());
+        List<Object> resultList = em.createNativeQuery("SELECT count(*), ap.status FROM api_data  ap GROUP BY ap.status" ).getResultList();
+        for(Object a:resultList){
+            System.out.println(a.toString());
+        }
         HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
     }
 }
