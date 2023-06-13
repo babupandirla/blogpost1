@@ -39,7 +39,7 @@ public class CustomInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         LocalDateTime localUTCDT = (LocalDateTime) request.getAttribute("startTime");
-        long startTime = localUTCDT.atZone(ZoneId.of("UTC")).toInstant().toEpochMilli();
+        long startTime = localUTCDT.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 //        long startTime = (long) request.getAttribute("startTime");
         long endTime = System.currentTimeMillis();
         long timeTaken = endTime - startTime;
