@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,4 +24,7 @@ public class ApiData {
     private String url;
     @Column(name = "status", nullable = false)
     private int status;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
+    private Long executionTime;
 }
