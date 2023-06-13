@@ -16,7 +16,9 @@ public class ServiceInterceptorConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(getCustomInterceptor());
+        registry.addInterceptor(getCustomInterceptor())
+                .excludePathPatterns(
+                "/api/apidata", "/api/apidata/*");
         WebMvcConfigurer.super.addInterceptors(registry);
     }
 }
