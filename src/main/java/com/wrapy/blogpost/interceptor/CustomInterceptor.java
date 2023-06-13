@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 public class CustomInterceptor implements HandlerInterceptor {
@@ -21,7 +23,7 @@ public class CustomInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        request.setAttribute("startTime", System.currentTimeMillis());
+        request.setAttribute("startTime",LocalDateTime.now());
         return HandlerInterceptor.super.preHandle(request, response, handler);
     }
 
@@ -30,19 +32,24 @@ public class CustomInterceptor implements HandlerInterceptor {
                            ModelAndView modelAndView) throws Exception {
         System.out.println(response.getStatus());
         System.out.println(request.getRequestURL());
-        ApiData a1=new ApiData();
-        a1.setUrl(request.getRequestURL().toString());
-        a1.setStatus(response.getStatus());
-        apiDataRepository.save(a1);
+
         HandlerInterceptor.super.postHandle(request, response, handler, modelAndView);
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        long startTime = (long) request.getAttribute("startTime");
+        LocalDateTime localUTCDT = (LocalDateTime) request.getAttribute("startTime");
+        long startTime = localUTCDT.atZone(ZoneId.of("UTC")).toInstant().toEpochMilli();
+//        long startTime = (long) request.getAttribute("startTime");
         long endTime = System.currentTimeMillis();
         long timeTaken = endTime - startTime;
-
+        ApiData a1=new ApiData();
+        a1.setUrl(request.getRequestURL().toString());
+        a1.setStatus(response.getStatus());
+        a1.setStartDate((LocalDateTime) request.getAttribute("startTime"));
+        a1.setEndDate(LocalDateTime.now());
+        a1.setExecutionTime(timeTaken);
+        apiDataRepository.save(a1);
         // Record API response time using Micrometer
         System.out.println("API response time: " + timeTaken + " ms");
         List<Object> resultList = em.createNativeQuery("SELECT count(*), ap.status FROM api_data  ap GROUP BY ap.status" ).getResultList();
